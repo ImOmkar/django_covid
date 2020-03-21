@@ -3,13 +3,28 @@
 This package makes **COVID-19** data available through python API. All the data are directy taken from the [CSSEGISandData-covi19](https://github.com/CSSEGISandData/COVID-19#2019-novel-coronavirus-covid-19-2019-ncov-data-repository-by-johns-hopkins-csse) with the below mentioned data sources. There are several methods to extract the statistics and counts for the coutry or province.
 
 ## Installation:
-#### Also available in pypi:
-    covid-data-api
 
 #### From GitHub:
-  * Clone this repo.
-  * pip install -r requirements.txt
-  * python setup.py install
+  * Clone this repo. 
+  
+#### Also available in django project site:
+    pip install django
+    
+    django-admin startproject 'project_name'
+ 
+ #### move to project directory and run:
+ 
+    python manage.py migrate
+    
+    python manage.py runserver
+ 
+    python manage.py startapp 'app_name'
+    
+    
+## Installation:
+#### Also available in pypi. github link - (https://github.com/gtkChop/covid19):
+    pip install covid-data-api
+    
 
 ## How to user:
 
@@ -72,20 +87,3 @@ Shows all the state/province metrics confirmed, recovered and deaths for the dat
  
 All used data sources [CSSEGISandData-covi19](https://github.com/CSSEGISandData/COVID-19#2019-novel-coronavirus-covid-19-2019-ncov-data-repository-by-johns-hopkins-csse).
   
-## Support and Maintenance:
-
-Please raise an issues with issues of this git repo. This is not actively supported, however anyone with the interest can solve the raised issues.
-
-## Copying and License
-##### Terms and conditions of the data provider:
-[CSSEGISandData-covi19](https://github.com/CSSEGISandData/COVID-19#2019-novel-coronavirus-covid-19-2019-ncov-data-repository-by-johns-hopkins-csse)
-
-##### Terms and Condition of this repo:
-License: [MIT](https://github.com/gtkChop/covid19/blob/master/LICENSE)
-
-## Authors:
-
- * [gtkChop](https://github.com/gtkChop)
- * [vipin-tech](https://github.com/vipin-tech)
-
-see also [contributors](https://github.com/gtkChop/covid19/graphs/contributors)
