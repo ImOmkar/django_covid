@@ -26,7 +26,7 @@ This package makes **COVID-19** data available through python API. All the data 
     pip install covid-data-api
     
 
-## How to user:
+## How to use:
 
 #### Initialising the instance/api:
 ```
