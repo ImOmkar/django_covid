@@ -1,6 +1,4 @@
-## COVID-19 DATA API
-
-This package makes **COVID-19** data available through python API. All the data are directy taken from the [CSSEGISandData-covi19](https://github.com/CSSEGISandData/COVID-19#2019-novel-coronavirus-covid-19-2019-ncov-data-repository-by-johns-hopkins-csse) with the below mentioned data sources. There are several methods to extract the statistics and counts for the coutry or province.
+## COVID DATA API
 
 ## Installation:
 
@@ -8,7 +6,7 @@ This package makes **COVID-19** data available through python API. All the data 
   * Clone this repo. 
   
 #### Also available in django project site:
-    pip install django
+    pip install covid
     
     django-admin startproject 'project_name'
  
@@ -30,60 +28,33 @@ This package makes **COVID-19** data available through python API. All the data 
 
 #### Initialising the instance/api:
 ```
-from covid.api import CovId19Data
+from covid import Covid
 
-api = CovId19Data(force=False)
+covid = Covid()
 ```
-If force = True, every time object is instantiated new data is downloaded. Otherwise data will be refreshed after 24 hrs.
 
 #### Method 1: Get stats:
 Get the latest total stats for all confirmed, deaths and recovered till the latest date available.
 ```
-res = api.get_stats()
+confirmed = covid.get_total_confirmed_cases()
+
+recovered = covid.get_total_recovered()
+
+deaths = covid.get_total_deaths()
+
+active = covid.get_total_active_cases()
 ```
 #### Method 2: Get records for all the countries:
 ```
-res = api.get_all_records_by_country()
+data = covid.get_data()
 ```
-#### Method 3: Get records for all the state/Province:
-```
-res = api.get_all_records_by_provinces()
-```
-
 #### Method 4: Filter by Country:
 To find all the countries availabe, plese use show_all_available_countries api.
 ```
-res = api.filter_by_country("ireland")
+india_cases = covid.get_status_by_country_name("India")
 ```
-
-#### Method 5: Filter by Province/State:
-To find all the countries availabe, plese use show_all_available_regions api.
-```
-res = api.filter_by_province("British Columbia")
-```
-
 #### Method 6: Show all available Countries:
 ```
-res = api.show_available_countries()
+countries = covid.list_countries()
 ```
-#### Method 7: Show all valiable Province/State:
-```
-res = api.show_available_regions()
-```
-
-#### Method 8: Get history data for a given Country:
-```
-res = api.get_history_by_country("ireland")
-```
-Shows all the country metrics confirmed, recovered and deaths for the dates till the latest date.
-
-#### Method 9: Get history data for a given State/Province:
-```
-res = api.get_history_by_province("British Columbia")
-```
-Shows all the state/province metrics confirmed, recovered and deaths for the dates till the latest date.
-
-## Data Sources:
- 
-All used data sources [CSSEGISandData-covi19](https://github.com/CSSEGISandData/COVID-19#2019-novel-coronavirus-covid-19-2019-ncov-data-repository-by-johns-hopkins-csse).
   
