@@ -2,27 +2,34 @@ from django.shortcuts import render, HttpResponse
 import requests
 import json
 
-from covid.api import CovId19Data
+from covid import Covid
 # Create your views here.
 
 def index(request):
-    api = CovId19Data(force=True)
+    covid = Covid()
 
-    complete_data = api.get_stats()
-    all_country_data = api.get_all_records_by_country()
+    data = covid.get_data()
 
-    india_data = api.filter_by_country("india")
+    india_cases = covid.get_status_by_country_name("India")
 
-    #for key, value in india_data.items():
-    #    if key == 'confirmed':
-    #        print(value)
+    confirmed = covid.get_total_confirmed_cases()
 
-    #print(res)
+    recovered = covid.get_total_recovered()
+
+    deaths = covid.get_total_deaths()
+
+    active = covid.get_total_active_cases()
+
+    print(confirmed, recovered, deaths, active)
+
 
     context = {
-        'complete_data': complete_data,
-        'all_country_data': all_country_data,
-        'india_data': india_data
+        'data': data,
+        'india_cases': india_cases,
+        'confirmed': confirmed,
+        'deaths': deaths,
+        'active': active,
+        'recovered': recovered,
     }
 
     return render(request, 'stats/index.html', context)
