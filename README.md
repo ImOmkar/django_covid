@@ -20,7 +20,7 @@
     
     
 ## Installation:
-#### Also available in pypi. github link - (https://github.com/gtkChop/covid19):
+#### Also available in pypi. github link - (https://github.com/ahmednafies/covid):
     pip install covid-data-api
     
 
