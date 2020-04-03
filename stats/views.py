@@ -8,7 +8,7 @@ from covid import Covid
 def index(request):
     covid = Covid()
 
-    data = covid.get_data()
+   # data = covid.get_data()
 
     india_cases = covid.get_status_by_country_name("India")
 
@@ -24,7 +24,7 @@ def index(request):
 
 
     context = {
-        'data': data,
+       # 'data': data,
         'india_cases': india_cases,
         'confirmed': confirmed,
         'deaths': deaths,
