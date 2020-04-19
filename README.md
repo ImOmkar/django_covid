@@ -1,3 +1,5 @@
+![Image of Yaktocat](https://res.cloudinary.com/dwltrduan/image/upload/v1587307228/Screenshot_190_j9gnqv.png)
+
 ## COVID DATA API
 
 ## Installation:
