@@ -32,4 +32,4 @@ def index(request):
         'recovered': recovered,
     }
 
-    return render(request, 'stats/index.html', context)
+    return render(request, 'stats/covid.html', context)
