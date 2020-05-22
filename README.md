@@ -1,5 +1,7 @@
 ## trackercovid19 
-![Image of Yaktocat](https://res.cloudinary.com/dwltrduan/image/upload/v1587307228/Screenshot_190_j9gnqv.png)
+![Image](https://res.cloudinary.com/dwltrduan/image/upload/v1590135747/Screenshot_249_gpaaty.png)
+
+![Image](https://res.cloudinary.com/dwltrduan/image/upload/v1590135757/Screenshot_252_rackrx.png)
 
 ## COVID DATA API
 
