@@ -1,0 +1,2977 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="COVID19 DATA TRACKER">
+  <meta name="author" content="@ImOmkar">
+
+  <title>COVID2019 - Dashboard</title>
+
+  <meta property="og:title" content="COVID19 DATA TRACKER" />
+  <meta property="og:site_name" content="TRACK COVID19">
+  <meta property="og:url" content="https://trackercovid19.herokuapp.com/"/>
+  <meta property="og:description" content="COVID19 DATA TRACKER - Gives you the Live data of corona disease from different countries.">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://www.ctvnews.ca/polopoly_fs/1.4837302.1583273084!/httpImage/image.jpg_gen/derivatives/landscape_1020/image.jpg" />
+
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="https://trackercovid19.herokuapp.com/">
+  <meta name="twitter:title" content="COVID19 DATA TRACKER">
+  <meta name="twitter:description" content="COVID19 DATA TRACKER - Gives you the Live data of corona disease from different countries.">
+  <meta name="twitter:creator" content="@OmParab5">
+  <!-- Twitter Summary card images must be at least 120x120px -->
+  <meta name="twitter:image" content="https://www.ctvnews.ca/polopoly_fs/1.4837302.1583273084!/httpImage/image.jpg_gen/derivatives/landscape_1020/image.jpg">
+
+  <link rel="icon" href="https://img.icons8.com/plasticine/100/000000/coronavirus.png" type="image/icon type">
+
+  <script src="https://www.amcharts.com/lib/4/core.js"></script>
+  <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+  <script src="https://www.amcharts.com/lib/4/maps.js"></script>
+  <script src="https://www.amcharts.com/lib/4/geodata/worldLow.js"></script>
+  <script src="https://covid.amCharts.com/data/js/world_timeline.js"></script>
+  <script src="https://covid.amCharts.com/data/js/total_timeline.js"></script>
+  <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+
+  <style>
+      body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+
+    #chartdiv {
+      max-width: 100%;
+      height: 800px;
+      background-color:#212327;
+    }
+</style>
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+        <div class="sidebar-brand-icon rotate-n-15">
+          <i class="fas fa-user-ninja"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">COVID<sup>19</sup></div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'home' %}">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Dashboard</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'MH' %}">
+          <span>Maharashtra</span></a>
+      </li>
+
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <span class="navbar-text text-primary">
+            <strong><span class="text-danger">COVID19</span><span class="text-warning"> Maharashtra</span></strong>
+          </span>
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+            <li class="nav-item dropdown no-arrow d-sm-none">
+              <!--<a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+              </a>-->
+              <!-- Dropdown - Messages -->
+              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                <form class="form-inline mr-auto w-100 navbar-search">
+                  <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary" type="button">
+                        <i class="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </li>
+
+            <!-- Nav Item - Messages -->
+
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Mumbai</strong><span class="badge badge-secondary"> {{mum_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ mum_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ mum_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ mum_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ mum_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Ahmednagar</strong><span class="badge badge-secondary"> {{ah_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ah_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ah_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ah_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ah_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+         <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Akola</strong><span class="badge badge-secondary"> {{ak_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ak_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ak_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ak_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ak_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Amravati</strong><span class="badge badge-secondary"> {{am_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ am_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ am_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ am_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ am_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Sambhaji Nagar</strong><span class="badge badge-secondary"> {{ab_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ab_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ab_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ab_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ab_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Beed</strong><span class="badge badge-secondary"> {{bd_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bd_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bd_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bd_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bd_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+         <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Bhandara</strong><span class="badge badge-secondary"> {{bhand_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bhand_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bhand_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bhand_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bhand_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Buldhana</strong><span class="badge badge-secondary"> {{bld_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bld_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bld_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bld_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ bld_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Chandrapur</strong><span class="badge badge-secondary"> {{chdp_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ chdp_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ chdp_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ chdp_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ chdp_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Dhule</strong><span class="badge badge-secondary"> {{dhl_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ dhl_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ dhl_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ dhl_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ dhl_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Gadchiroli</strong><span class="badge badge-secondary"> {{gdch_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ gdch_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ gdch_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ gdch_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ gdch_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Gondia</strong><span class="badge badge-secondary"> {{gond_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ gond_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ gond_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ gond_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ gond_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Hingoli</strong><span class="badge badge-secondary"> {{hing_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ hing_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ hing_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ hing_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ hing_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Jalgao</strong><span class="badge badge-secondary"> {{jlg_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ jlg_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ jlg_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ jlg_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ jlg_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Jalna</strong><span class="badge badge-secondary"> {{jln_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ jln_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ jln_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ jln_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ jln_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Kolhapur</strong><span class="badge badge-secondary"> {{kol_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ kol_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ kol_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ kol_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ kol_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Latur</strong><span class="badge badge-secondary"> {{ltr_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ltr_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ltr_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ltr_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ltr_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Nagpur</strong><span class="badge badge-secondary"> {{ngp_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ngp_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ngp_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ngp_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ngp_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Nanded</strong><span class="badge badge-secondary"> {{nded_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ nded_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ nded_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ nded_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ nded_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Nandurbar</strong><span class="badge badge-secondary"> {{ndb_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ndb_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ndb_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ndb_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ndb_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Nashik</strong><span class="badge badge-secondary"> {{nsk_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ nsk_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ nsk_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ nsk_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ nsk_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Osmanabad</strong><span class="badge badge-secondary"> {{osb_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ osb_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ osb_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ osb_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ osb_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Palghar</strong><span class="badge badge-secondary"> {{plg_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ plg_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ plg_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ plg_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ plg_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Parbhani</strong><span class="badge badge-secondary"> {{prb_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ prb_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ prb_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ prb_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ prb_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Pune</strong><span class="badge badge-secondary"> {{pune_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ pune_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ pune_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ pune_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ pune_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Raigad</strong><span class="badge badge-secondary"> {{rgd_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ rgd_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ rgd_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ rgd_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ rgd_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Ratnagiri</strong><span class="badge badge-secondary"> {{rtn_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ rtn_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ rtn_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ rtn_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ rtn_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Sangli</strong><span class="badge badge-secondary"> {{sgl_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ sgl_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ sgl_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ sgl_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ sgl_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Satara</strong><span class="badge badge-secondary"> {{satr_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ satr_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ satr_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ satr_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ satr_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Sindhudurg</strong><span class="badge badge-secondary"> {{sindhu_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ sindhu_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ sindhu_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ sindhu_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ sindhu_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Solapur</strong><span class="badge badge-secondary"> {{slp_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ slp_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ slp_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ slp_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ slp_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Thane</strong><span class="badge badge-secondary"> {{thn_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ thn_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">danger</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ thn_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ thn_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ thn_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Wardha</strong><span class="badge badge-secondary"> {{war_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ war_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ war_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ war_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ war_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Washim</strong><span class="badge badge-secondary"> {{wsm_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ wsm_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ wsm_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ wsm_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ wsm_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800 text-center"><strong>Yavatmal</strong><span class="badge badge-secondary"> {{ytml_zone}} zone</span></h1>
+          </div>
+
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">confirmed</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ytml_confirmed }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-center text-uppercase mb-1">deaths</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ytml_deceased }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">active</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ytml_active }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-check fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-center text-primary text-uppercase mb-1">recovered</div>
+                      <div class="h5 mb-0 font-weight-bold text-center text-gray-800">{{ ytml_recovered }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-heart fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+
+
+
+
+      <div class="card shadow mb-4">
+        <!--<div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Country wise Data</h6>
+        </div><br>-->
+        <!--<form class="mr-left ml-3">
+          <div class="input-group">
+            <input type="text" id="myInput" class="form-control bg-light border-0 small" placeholder="Search..." aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="button">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+            </div>
+          </div>
+        </form>-->
+      </div>
+      <!-- End of Main Content -->
+
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span> TrackerCOVID19 | 2020</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+  <!-- Page level plugins -->
+
+
+</body>
+
+</html>
+
+<!--<div class="row">
+  <div class="container">
+  <div class="col-lg-12">
+     {% for key, value in all_country_data.items %}
+      <div class="card border-primary mb-3">
+      <div class="card-header text-center"></div>
+      <div class="card-body text-center">
+      <h5 class="card-title">{{ key }}</h5>
+      <p class="card-text">{{ value }}</p>
+    </div>
+    </div>
+      {% endfor %}
+  </div>
+</div>
+</div>-->
