@@ -11,7 +11,7 @@ gunicorn==20.0.4
 hug==2.6.1
 idna==2.9
 jsons==1.1.2
-numpy==1.18.2
+numpy==1.22.0
 pandas==1.0.3
 plotly==4.5.4
 psycopg2==2.8.4
